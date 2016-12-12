@@ -28,6 +28,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.io.IOException;
 import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
@@ -53,6 +54,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         MainActivity.places.add(label);
         MainActivity.arrayAdapter.notifyDataSetChanged();
         MainActivity.locations.add(point);
+        if(MainActivity.set==null){MainActivity.set=new HashSet<String>();}
+        else{MainActivity.set.clear();}
+        MainActivity.set.addAll(MainActivity.places);
+        MainActivity.sharedPreferences.edit().remove("places").apply();
+
+        MainActivity.sharedPreferences.edit().putStringSet("places",MainActivity.set).apply();
         mMap.addMarker(new MarkerOptions()
                 .position(point)
                 .title(label)
@@ -97,7 +104,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (location != -1 && location != 0) {
             // Add a marker in Sydney and move the camera
             locationManager.removeUpdates(this);
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(MainActivity.locations.get(location), 15));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(MainActivity.locations.get(location), 18));
             mMap.addMarker(new MarkerOptions().position(MainActivity.locations.get(location)).title(MainActivity.places.get(location)));
 
         } else {
